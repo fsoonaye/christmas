@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assembler</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #fffcf0; cursor: none; /* Hide default cursor */ }
+        
+        /* The container for the following image */
+        #follower {
+            position: absolute;
+            pointer-events: none; /* Critical: allows clicks to pass through to body */
+            transform: translate(-50%, -50%); /* Center image on mouse */
+            width: 200px; /* Adjust based on your asset size */
+            height: auto;
+            transition: transform 0.1s ease-out; /* Slight lag for smooth feel */
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-family: monospace;
+            color: #888;
+            pointer-events: none;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            cursor: pointer; /* We need cursor here */
+            font-family: sans-serif;
+            background: white;
+            border: 1px solid #ccc;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='search.html'">← Back</button>
+    
+    <img id="follower" src="" alt="Following item">
+    
+    <div class="instructions">Click to build. Click again to evolve.</div>
+
+    <script>
+        // 1. Determine type (flower, tomato, brownie) from URL
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get('type') || 'flower'; // Default to flower
+        
+        // 2. State Management
+        let currentStage = 1;
+        const maxStages = 10;
+        const imgElement = document.getElementById('follower');
+
+        // Helper to set image source
+        function updateImage() {
+            // Assumes files are in assets/flower_1.png, flower_2.png, etc.
+            imgElement.src = `assets/${type}_${currentStage}.png`;
+        }
+
+        // Initialize first image
+        updateImage();
+
+        // 3. Mouse Movement Logic
+        document.addEventListener('mousemove', (e) => {
+            imgElement.style.left = e.clientX + 'px';
+            imgElement.style.top = e.clientY + 'px';
+        });
+
+        // 4. Click Logic
+        document.addEventListener('click', (e) => {
+            // Ignore clicks on the back button
+            if(e.target.classList.contains('back-btn')) return;
+
+            if (currentStage < maxStages) {
+                currentStage++;
+                updateImage();
+            } else {
+                // Reset on final click
+                currentStage = 1;
+                updateImage();
+            }
+        });
+    </script>
+</body>
+</html>

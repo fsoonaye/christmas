@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Qwant-ish Search</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Qwant-ish Layout */
+        body { margin: 0; display: flex; height: 100vh; font-family: sans-serif; }
+        .sidebar { width: 80px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
+        .main { flex: 1; padding: 40px; background: #fdfdfd; }
+        .search-bar { width: 100%; max-width: 600px; padding: 15px; border-radius: 30px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-size: 1.1rem; margin-bottom: 40px; }
+        .result { margin-bottom: 30px; max-width: 600px; }
+        .result h3 a { color: #1a0dab; text-decoration: none; font-size: 1.2rem; }
+        .result cite { color: #006621; font-style: normal; font-size: 0.9rem; }
+        .result p { color: #545454; font-size: 0.95rem; margin-top: 5px; }
+        
+        /* Colorful fake icons for sidebar */
+        .icon { width: 40px; height: 40px; border-radius: 50%; background: #eee; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="icon" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4);"></div>
+        <div class="icon"></div>
+        <div class="icon"></div>
+    </div>
+    <div class="main">
+        <input type="text" class="search-bar" value="Christmas Gift Ideas 2024" readonly>
+
+        <div class="result">
+            <cite>www.northpole.delivery > flowers</cite>
+            <h3><a href="distributor.html?type=flower">Build a Flower</a></h3>
+            <p>Click to assemble a beautiful digital bloom. Hand-picked pixels just for you.</p>
+        </div>
+
+        <div class="result">
+            <cite>www.italy-kitchen.com > cooking</cite>
+            <h3><a href="distributor.html?type=tomato">Tomato Factory</a></h3>
+            <p>Assemble the perfect tomato. Warning: May cause digital hunger.</p>
+        </div>
+
+        <div class="result">
+            <cite>www.bakery.local > sweets</cite>
+            <h3><a href="distributor.html?type=brownie">The Brownie Stack</a></h3>
+            <p>Layer upon layer of chocolate goodness. Zero calories included.</p>
+        </div>
+
+        <div class="result">
+            <cite>www.postoffice.mail > inbox</cite>
+            <h3><a href="letters.html">Read Your Letters</a></h3>
+            <p>A persistent collection of notes and memories. Write something back!</p>
+        </div>
+    </div>
+</body>
+</html>
