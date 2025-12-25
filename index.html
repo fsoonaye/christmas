@@ -1,23 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Portal Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bloom</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
-        .login-box { padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        input { padding: 10px; margin: 10px 0; display: block; width: 100%; box-sizing: border-box; }
-        button { padding: 10px 20px; cursor: pointer; background: #ff4757; color: white; border: none; border-radius: 4px; }
-    </style>
 </head>
-<body>
-    <div class="login-box">
-        <h2>🎄 Private Access</h2>
-        <input type="text" id="nick" placeholder="Nickname">
-        <input type="password" id="pass" placeholder="Password">
-        <button onclick="attemptLogin()">Enter</button>
-        <p id="error" style="color:red; display:none;">Incorrect credentials</p>
+<body class="qw-page login-page">
+    <div class="login-shell">
+        <a class="login-wordmark" href="index.html" aria-label="Bloom">
+            Bloom<span class="login-wordmark-dot" aria-hidden="true"></span>
+        </a>
+
+        <div class="login-card" role="form" aria-label="Connexion">
+            <p class="login-subtitle">Entre ton identifiant pour ouvrir le cadeau.</p>
+
+            <div class="login-fields">
+                <input class="login-input" type="text" id="nick" placeholder="Pseudo" autocomplete="username">
+                <input class="login-input" type="password" id="pass" placeholder="Mot de passe" autocomplete="current-password">
+            </div>
+
+            <div class="login-actions">
+                <button class="login-btn" id="loginBtn" type="button">Entrer</button>
+            </div>
+
+            <div id="error" class="login-error">Identifiants incorrects.</div>
+        </div>
     </div>
 
     <script>
@@ -42,6 +50,11 @@
                 document.getElementById('error').style.display = 'block';
             }
         }
+
+        document.getElementById('loginBtn').addEventListener('click', attemptLogin);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') attemptLogin();
+        });
 
         // Admin feature: Type 'showStats()' in the browser console to see data
         window.showStats = function() {

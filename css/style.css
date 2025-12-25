@@ -29,6 +29,133 @@
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Login page (Bloom / Qwant-ish)                                             */
+/* -------------------------------------------------------------------------- */
+
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px 18px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(1200px 700px at 15% 15%, rgba(122, 162, 255, 0.10), transparent 60%),
+    radial-gradient(900px 600px at 85% 20%, rgba(255, 255, 255, 0.06), transparent 55%),
+    var(--qw-bg);
+}
+
+.login-shell {
+  width: min(560px, 94vw);
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+.login-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--qw-text);
+  font-family: "Space Grotesk", Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  font-size: 34px;
+  padding: 6px 10px;
+  border-radius: 12px;
+}
+
+.login-wordmark-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--qw-accent), rgba(122, 162, 255, 0.35));
+  box-shadow: 0 0 0 4px rgba(122, 162, 255, 0.12);
+  transform: translateY(-4px);
+}
+
+.login-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--qw-border);
+  border-radius: 22px;
+  box-shadow: var(--qw-shadow);
+  padding: 18px 18px 16px;
+  box-sizing: border-box;
+}
+
+.login-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--qw-text);
+}
+
+.login-subtitle {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--qw-muted);
+  line-height: 1.45;
+}
+
+.login-fields {
+  display: grid;
+  gap: 10px;
+}
+
+.login-input {
+  height: 48px;
+  border-radius: 999px;
+  background: var(--qw-panel);
+  border: 1px solid var(--qw-border);
+  color: var(--qw-text);
+  padding: 0 16px;
+  font-size: 15px;
+  outline: none;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.login-input::placeholder {
+  color: var(--qw-muted-2);
+}
+
+.login-input:focus {
+  border-color: rgba(122, 162, 255, 0.35);
+  box-shadow: 0 0 0 4px rgba(122, 162, 255, 0.10), 0 10px 22px rgba(0, 0, 0, 0.20);
+}
+
+.login-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.login-btn {
+  flex: 1;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(135deg, rgba(122, 162, 255, 0.98), rgba(122, 162, 255, 0.72));
+  color: white;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+}
+
+.login-btn:hover { filter: brightness(1.03); }
+.login-btn:active { transform: translateY(1px); }
+
+.login-error {
+  margin-top: 10px;
+  color: rgba(255, 140, 140, 0.95);
+  font-weight: 700;
+  font-size: 13px;
+  display: none;
+}
+
 .qw-shell {
   min-height: 100vh;
   display: grid;
