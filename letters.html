@@ -1,70 +1,176 @@
 <!-- PantryID: 90f9f475-1c45-4996-b608-2773456ab125 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Letters</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Correspondance</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        body { font-family: 'Courier New', Courier, monospace; max-width: 800px; margin: 0 auto; padding: 40px; background: #fff; }
-        .letter-container { margin-bottom: 40px; }
-        .letter { background: #f9f9f9; padding: 20px; margin-bottom: 20px; border-left: 4px solid #333; white-space: pre-wrap; }
-        .timestamp { font-size: 0.8em; color: #888; display: block; margin-top: 10px; }
-        
-        textarea { width: 100%; height: 100px; padding: 10px; font-family: inherit; margin-bottom: 10px; }
-        button { background: #333; color: white; border: none; padding: 10px 20px; cursor: pointer; }
-        button:disabled { background: #ccc; }
-    </style>
 </head>
-<body>
-    <h1>Letters</h1>
-    <a href="search.html" style="margin-bottom: 20px; display:block;">← Back to Search</a>
+<body class="letters-page view-cards">
+    <div class="letters-shell">
+        <header class="letters-header">
+            <a class="letters-back" href="search.html">← Retour à Bloom</a>
+            <div class="letters-actions">
+                <button class="music-btn" id="musicBtn" type="button">▶ Musique</button>
+            </div>
+        </header>
 
-    <div id="letters-list" class="letter-container">
-        <p>Loading letters...</p>
+        <main class="letters-main">
+            <section aria-label="Lire les lettres">
+                <div id="letters-status" class="letters-status">Chargement des lettres…</div>
+                <div id="letters-list" class="letters-list" aria-live="polite"></div>
+
+                <div class="compose-card" aria-label="Répondre">
+                    <h2 class="compose-title">Écrire une lettre</h2>
+                    <textarea id="new-letter" class="compose-textarea" placeholder="..." rows="8"></textarea>
+
+                    <div class="compose-actions">
+                        <button id="submit-btn" class="btn-primary" type="button">Envoyer</button>
+                        <span id="compose-note" class="compose-note" aria-live="polite"></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="letters-footer">
+            
+        </footer>
     </div>
 
-    <hr>
-    <h3>Write a Reply</h3>
-    <textarea id="new-letter" placeholder="Type your message here..."></textarea>
-    <button id="submit-btn" onclick="postLetter()">Send Letter</button>
+    <audio id="bgm" src="assets/musique.mp3" preload="none" loop></audio>
 
     <script>
         const PANTRY_ID = "90f9f475-1c45-4996-b608-2773456ab125"; 
         const BUCKET_NAME = "christmas-letters";
         const BASE_URL = `https://getpantry.cloud/apiv1/pantry/${PANTRY_ID}/basket/${BUCKET_NAME}`;
 
-        // 1. Fetch Letters on Load
+        const root = document.body;
+        const listEl = document.getElementById('letters-list');
+        const statusEl = document.getElementById('letters-status');
+        const inputEl = document.getElementById('new-letter');
+        const submitBtn = document.getElementById('submit-btn');
+        const composeNote = document.getElementById('compose-note');
+        const musicBtn = document.getElementById('musicBtn');
+        const bgm = document.getElementById('bgm');
+
+        // Music: user must click (autoplay is blocked by browsers)
+        let musicOn = false;
+        function syncMusicUi() {
+            musicBtn.textContent = musicOn ? '❚❚ Musique' : '▶ Musique';
+        }
+        syncMusicUi();
+        musicBtn.addEventListener('click', async () => {
+            try {
+                if (!musicOn) {
+                    await bgm.play();
+                    musicOn = true;
+                } else {
+                    bgm.pause();
+                    musicOn = false;
+                }
+            } catch (e) {
+                // If the file is missing or the browser blocks it, give a gentle hint.
+                alert("Je ne trouve pas la musique. Ajoute un fichier MP3 à l’emplacement : assets/musique.mp3");
+                console.error(e);
+                musicOn = false;
+            } finally {
+                syncMusicUi();
+            }
+        });
+
+        // --- Rendering helpers (avoid innerHTML injection) ---
+        function clearNode(el) {
+            while (el.firstChild) el.removeChild(el.firstChild);
+        }
+
+        function formatDateFr(dateStr) {
+            // Pantry stores a locale string; we try to parse, but gracefully fall back.
+            const d = new Date(dateStr);
+            if (Number.isNaN(d.getTime())) return dateStr;
+            return d.toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+        }
+
+        function renderLetters(letters) {
+            clearNode(listEl);
+
+            if (!letters.length) {
+                statusEl.textContent = "Aucune lettre pour l’instant.";
+                return;
+            }
+
+            statusEl.textContent = `${letters.length} lettre${letters.length > 1 ? 's' : ''}.`;
+
+            letters.forEach((l, idx) => {
+                const card = document.createElement('article');
+                card.className = 'letter-card';
+                card.style.setProperty('--tilt', ((idx % 2 === 0) ? -0.35 : 0.28) + 'deg');
+
+                const meta = document.createElement('div');
+                meta.className = 'letter-meta';
+
+                const date = document.createElement('div');
+                date.className = 'letter-date';
+                date.textContent = formatDateFr(l.date || '');
+
+                meta.appendChild(date);
+
+                const text = document.createElement('div');
+                text.className = 'letter-text';
+                text.textContent = (l.text || '').trim();
+
+                const lines = document.createElement('div');
+                lines.className = 'letter-lines';
+
+                const cover = document.createElement('button');
+                cover.type = 'button';
+                cover.className = 'letter-cover';
+                cover.setAttribute('aria-expanded', 'false');
+                cover.setAttribute('aria-label', 'Ouvrir la lettre');
+                cover.innerHTML = `
+                    <span class="letter-cover-text">Ouvrir</span>
+                `;
+
+                cover.addEventListener('click', () => {
+                    const isOpen = card.classList.toggle('is-open');
+                    cover.setAttribute('aria-expanded', String(isOpen));
+                    cover.setAttribute('aria-label', isOpen ? 'Refermer la lettre' : 'Ouvrir la lettre');
+                    cover.querySelector('.letter-cover-text').textContent = isOpen ? 'Refermer' : 'Ouvrir';
+                });
+
+                card.appendChild(meta);
+                card.appendChild(text);
+                card.appendChild(lines);
+                card.appendChild(cover);
+
+                listEl.appendChild(card);
+            });
+        }
+
+        // 1. Fetch letters on load
         async function fetchLetters() {
-            const list = document.getElementById('letters-list');
+            statusEl.textContent = "Chargement des lettres…";
+            clearNode(listEl);
             try {
                 const response = await fetch(BASE_URL);
-                if (!response.ok) throw new Error('No letters yet');
+                if (!response.ok) throw new Error('Aucune lettre');
                 
                 const data = await response.json();
                 const letters = data.letters || [];
-                
-                list.innerHTML = letters.map(l => `
-                    <div class="letter">
-                        ${l.text}
-                        <span class="timestamp">${l.date}</span>
-                    </div>
-                `).join('');
+                renderLetters(letters);
             } catch (e) {
-                // If bucket doesn't exist yet, we initialize it
-                list.innerHTML = "<p>No letters yet. Be the first to write one!</p>";
+                statusEl.textContent = "Aucune lettre pour l’instant.";
             }
         }
 
-        // 2. Post New Letter
+        // 2. Post new letter
         async function postLetter() {
-            const input = document.getElementById('new-letter');
-            const btn = document.getElementById('submit-btn');
-            const text = input.value.trim();
+            const text = inputEl.value.trim();
             if (!text) return;
 
-            btn.disabled = true;
-            btn.innerText = "Posting...";
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Envoi…";
+            composeNote.textContent = "Je plie l’enveloppe…";
 
             try {
                 // Get existing letters first (Pantry overwrites, so we must fetch-modify-save)
@@ -78,7 +184,7 @@
                 // Add new letter
                 currentLetters.push({
                     text: text,
-                    date: new Date().toLocaleString()
+                    date: new Date().toLocaleString('fr-FR')
                 });
 
                 // Save back to Pantry
@@ -88,18 +194,22 @@
                     body: JSON.stringify({ letters: currentLetters })
                 });
 
-                input.value = "";
-                fetchLetters(); // Refresh list
+                inputEl.value = "";
+                composeNote.textContent = "Envoyée. Elle est maintenant dans la pile ✉";
+                await fetchLetters(); // Refresh list
             } catch (error) {
-                alert("Failed to send letter. Try again.");
+                alert("Impossible d’envoyer la lettre. Réessaie dans un instant.");
                 console.error(error);
+                composeNote.textContent = "Oups… le facteur s’est perdu.";
             } finally {
-                btn.disabled = false;
-                btn.innerText = "Send Letter";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Envoyer";
             }
         }
 
-        // Initial Load
+        submitBtn.addEventListener('click', postLetter);
+
+        // Initial boot
         fetchLetters();
     </script>
 </body>

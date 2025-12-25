@@ -1,56 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Qwant-ish Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bloom</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Qwant-ish Layout */
-        body { margin: 0; display: flex; height: 100vh; font-family: sans-serif; }
-        .sidebar { width: 80px; background: #fff; border-right: 1px solid #ddd; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
-        .main { flex: 1; padding: 40px; background: #fdfdfd; }
-        .search-bar { width: 100%; max-width: 600px; padding: 15px; border-radius: 30px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-size: 1.1rem; margin-bottom: 40px; }
-        .result { margin-bottom: 30px; max-width: 600px; }
-        .result h3 a { color: #1a0dab; text-decoration: none; font-size: 1.2rem; }
-        .result cite { color: #006621; font-style: normal; font-size: 0.9rem; }
-        .result p { color: #545454; font-size: 0.95rem; margin-top: 5px; }
-        
-        /* Colorful fake icons for sidebar */
-        .icon { width: 40px; height: 40px; border-radius: 50%; background: #eee; margin-bottom: 15px; }
-    </style>
 </head>
-<body>
-    <div class="sidebar">
-        <div class="icon" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4);"></div>
-        <div class="icon"></div>
-        <div class="icon"></div>
+<body class="qw-page">
+    <div class="qw-shell">
+        <div class="qw-main">
+            <div class="qw-main-grid">
+                <div class="qw-logo-col" aria-hidden="false">
+                    <a class="qw-wordmark" href="search.html" aria-label="Bloom">
+                        Bloom<span class="qw-wordmark-dot" aria-hidden="true"></span>
+                    </a>
+                </div>
+
+                <div class="qw-content-col">
+                    <header class="qw-top">
+                        <div class="qw-search" role="search" aria-label="Recherche">
+                            <input id="q" type="text" value="" placeholder="recherche" aria-label="Rechercher" autocomplete="off" spellcheck="false">
+                            <div class="qw-search-actions" aria-hidden="true">
+                                <button class="qw-icon-btn" type="button" title="Effacer" id="clearBtn">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                                <button class="qw-icon-btn" type="button" title="Rechercher">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.8"/>
+                                        <path d="M16.3 16.3 21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    <nav class="qw-tabs" aria-label="Filtres">
+                        <button class="qw-tab is-active" type="button">✨ Réponse Flash</button>
+                        <div class="qw-tabs-sep" aria-hidden="true"></div>
+                        <button class="qw-tab is-active" type="button">Tous</button>
+                        <button class="qw-tab" type="button">Images</button>
+                        <button class="qw-tab" type="button">Vidéos</button>
+                        <button class="qw-tab" type="button">Actualités</button>
+                        <button class="qw-tab" type="button">Shopping</button>
+                    </nav>
+
+                    <main class="qw-results" aria-label="Résultats">
+                        <article class="qw-result">
+                            <div class="qw-cite">
+                                <div class="qw-favicon">✉</div>
+                                <div>bloom.local › lettres</div>
+                            </div>
+                            <div class="qw-title"><a href="letters.html">Lettres</a></div>
+                            <div class="qw-snippet">Des lettres qui ne sont pas pour le père noël.</div>
+                        </article>
+
+                        <article class="qw-result">
+                            <div class="qw-cite">
+                                <div class="qw-favicon">💐</div>
+                                <div>bloom.local › bouquets</div>
+                            </div>
+                            <div class="qw-title"><a href="distributor.html?type=bouquet">Bouquets Champêtres</a></div>
+                            <div class="qw-snippet">Parce que je ne t'en ai jamais assez offert alors que tu me le glissais souvent à l'oreille.</div>
+                        </article>
+
+                        <article class="qw-result">
+                            <div class="qw-cite">
+                                <div class="qw-favicon">🍅</div>
+                                <div>bloom.local › tomates cerises</div>
+                            </div>
+                            <div class="qw-title"><a href="distributor.html?type=tomate">Tomates Cerises</a></div>
+                            <div class="qw-snippet">Oui, ce sont bien des tomates cerises Intermarché à 0,99€ la boite de 250g. Origine: Maroc.</div>
+                        </article>
+
+                        <article class="qw-result">
+                            <div class="qw-cite">
+                                <div class="qw-favicon">🍫</div>
+                                <div>bloom.local › brownies</div>
+                            </div>
+                            <div class="qw-title"><a href="distributor.html?type=brownie">Brownies</a></div>
+                            <div class="qw-snippet">LIDL ne produisant plus ses brownies partout, je me suis dit que j'allais en faire moi-même.</div>
+                        </article>
+
+                        <article class="qw-result">
+                            <div class="qw-cite">
+                                <div class="qw-favicon">🧺</div>
+                                <div>bloom.local › barquettes</div>
+                            </div>
+                            <div class="qw-title"><a href="distributor.html?type=barquette">Barquettes LU</a></div>
+                            <div class="qw-snippet">Distribution de barquettes LU à l'unité histoire de faire durer le plaisir (aussi parce que c'est plus sympa à dessiner qu'un paquet gris).</div>
+                        </article>
+
+                <article class="qw-result">
+                    <div class="qw-cite">
+                        <div class="qw-favicon">G</div>
+                        <div>genshin.hoyoverse.com › fr</div>
+                    </div>
+                    <div class="qw-title"><a href="https://genshin.hoyoverse.com/fr" target="_blank" rel="noopener noreferrer">Genshin Impact</a></div>
+                    <div class="qw-snippet">Le site de celles qui se sont forgés plus jeune.</div>
+                </article>
+
+                <article class="qw-result">
+                    <div class="qw-cite">
+                        <div class="qw-favicon">H</div>
+                        <div>crunchyroll.com › fr › series</div>
+                    </div>
+                    <div class="qw-title"><a href="https://www.crunchyroll.com/fr/series/GY8VM8MWY/haikyu" target="_blank" rel="noopener noreferrer">Haikyuu!!</a></div>
+                    <div class="qw-snippet">習慣は第二の天性なり。</div>
+                </article>
+
+                <article class="qw-result">
+                    <div class="qw-cite">
+                        <div class="qw-favicon">A</div>
+                        <div>aucomptoirdasie.com</div>
+                    </div>
+                    <div class="qw-title"><a href="https://aucomptoirdasie.com/" target="_blank" rel="noopener noreferrer">Au comptoir d’Asie</a></div>
+                    <div class="qw-snippet">Comme ça il est à portée de main.</div>
+                </article>
+
+                <article class="qw-result">
+                    <div class="qw-cite">
+                        <div class="qw-favicon">W</div>
+                        <div>fr.wikipedia.org › wiki › Emmanuel_Macron</div>
+                    </div>
+                    <div class="qw-title"><a href="https://fr.wikipedia.org/wiki/Emmanuel_Macron" target="_blank" rel="noopener noreferrer">Emmanuel Macron</a></div>
+                    <div class="qw-snippet" id="wiki-snippet">je me suis permis de modifier la SERP manuellement tu me diras si j'ai bien fait le travail.</div>
+                </article>
+
+                        <article class="qw-result">
+                            <div class="qw-cite">
+                                <div class="qw-favicon">V</div>
+                                <div>vogue.com › article</div>
+                            </div>
+                            <div class="qw-title"><a href="https://www.vogue.com/article/is-having-a-boyfriend-embarrassing-now" target="_blank" rel="noopener noreferrer">Is Having a Boyfriend Embarrassing Now?</a></div>
+                            <div class="qw-snippet">C'est quand même cocasse que l'article et tout ce qui se discute autour émerge en ce moment.</div>
+                        </article>
+                    </main>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="main">
-        <input type="text" class="search-bar" value="Christmas Gift Ideas 2024" readonly>
 
-        <div class="result">
-            <cite>www.northpole.delivery > flowers</cite>
-            <h3><a href="distributor.html?type=flower">Build a Flower</a></h3>
-            <p>Click to assemble a beautiful digital bloom. Hand-picked pixels just for you.</p>
-        </div>
-
-        <div class="result">
-            <cite>www.italy-kitchen.com > cooking</cite>
-            <h3><a href="distributor.html?type=tomato">Tomato Factory</a></h3>
-            <p>Assemble the perfect tomato. Warning: May cause digital hunger.</p>
-        </div>
-
-        <div class="result">
-            <cite>www.bakery.local > sweets</cite>
-            <h3><a href="distributor.html?type=brownie">The Brownie Stack</a></h3>
-            <p>Layer upon layer of chocolate goodness. Zero calories included.</p>
-        </div>
-
-        <div class="result">
-            <cite>www.postoffice.mail > inbox</cite>
-            <h3><a href="letters.html">Read Your Letters</a></h3>
-            <p>A persistent collection of notes and memories. Write something back!</p>
-        </div>
-    </div>
+    <script>
+        // Cosmetic-only behavior to match the UI: "X" clears the query field.
+        const q = document.getElementById('q');
+        const clearBtn = document.getElementById('clearBtn');
+        clearBtn.addEventListener('click', () => {
+            q.value = '';
+            q.focus();
+        });
+    </script>
 </body>
 </html>

@@ -1,89 +1,230 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Assembler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Distributeur — Bouquets</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #fffcf0; cursor: none; /* Hide default cursor */ }
-        
-        /* The container for the following image */
-        #follower {
-            position: absolute;
-            pointer-events: none; /* Critical: allows clicks to pass through to body */
-            transform: translate(-50%, -50%); /* Center image on mouse */
-            width: 200px; /* Adjust based on your asset size */
-            height: auto;
-            transition: transform 0.1s ease-out; /* Slight lag for smooth feel */
+        :root {
+            --bg: #fffcf0;
+            --ink: #2b2b2b;
+            --muted: rgba(0, 0, 0, 0.58);
+            --accent: #7aa2ff;
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
         }
-        
-        .instructions {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            font-family: monospace;
-            color: #888;
-            pointer-events: none;
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(1100px 700px at 20% 0%, rgba(255, 226, 240, 0.55), transparent 60%),
+                        radial-gradient(900px 600px at 80% 20%, rgba(214, 242, 255, 0.45), transparent 55%),
+                        linear-gradient(180deg, var(--bg), #fff6ea);
+            color: var(--ink);
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         }
 
         .back-btn {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px;
-            cursor: pointer; /* We need cursor here */
-            font-family: sans-serif;
-            background: white;
-            border: 1px solid #ccc;
-            z-index: 100;
+            top: 18px;
+            left: 18px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.10);
+            border-radius: 12px;
+            z-index: 50;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+        }
+
+        .stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            padding: 70px 22px 30px;
+            box-sizing: border-box;
+        }
+
+        /* Centered controls */
+        .controls {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0;
+            z-index: 10; /* above the bouquets */
+            text-align: center;
+        }
+
+        .counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            font-weight: 900;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.92);
+            background: rgba(0, 0, 0, 0.32);
+            backdrop-filter: blur(10px);
+        }
+
+        .counter small {
+            font-weight: 900;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.80);
+        }
+
+        .btn {
+            width: auto;
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: linear-gradient(135deg, rgba(122, 162, 255, 0.98), rgba(122, 162, 255, 0.72));
+            color: white;
+            padding: 9px 12px;
+            border-radius: 999px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 14px 28px rgba(122, 162, 255, 0.22);
+        }
+
+        .btn:hover { filter: brightness(1.03); }
+        .btn:active { transform: translateY(1px); }
+
+        /* Popping bouquet instances */
+        .bouquet-pop {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 160px;
+            height: auto;
+            pointer-events: none;
+            filter: drop-shadow(0 14px 18px rgba(0,0,0,0.18));
+            will-change: transform, opacity;
+            z-index: 1;
+        }
+
+        @keyframes popIn {
+            0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.35) rotate(var(--r, 0deg)); }
+            70%  { opacity: 1; transform: translate(-50%, -50%) scale(1.06) rotate(var(--r, 0deg)); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(var(--r, 0deg)); }
+        }
+
+        .bouquet-pop.is-pop {
+            animation: popIn 260ms cubic-bezier(.2,.9,.2,1) both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bouquet-pop.is-pop {
+                animation: none;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        @media (max-width: 860px) {
+            .controls {
+                gap: 8px;
+            }
         }
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="window.location.href='search.html'">← Back</button>
-    
-    <img id="follower" src="" alt="Following item">
-    
-    <div class="instructions">Click to build. Click again to evolve.</div>
+    <button class="back-btn" type="button" onclick="window.location.href='search.html'">← Retour</button>
+
+    <main class="stage" aria-label="Distributeur de bouquets">
+        <div class="controls" aria-label="Commandes">
+            <button class="btn" id="obtenirBtn" type="button">Obtenir</button>
+            <div class="counter" aria-label="Compteur d'obtentions">
+                <small>×</small>
+                <span id="count">0</span>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // 1. Determine type (flower, tomato, brownie) from URL
         const params = new URLSearchParams(window.location.search);
-        const type = params.get('type') || 'flower'; // Default to flower
-        
-        // 2. State Management
-        let currentStage = 1;
-        const maxStages = 10;
-        const imgElement = document.getElementById('follower');
+        const type = (params.get('type') || 'bouquet').toLowerCase();
 
-        // Helper to set image source
-        function updateImage() {
-            // Assumes files are in assets/flower_1.png, flower_2.png, etc.
-            imgElement.src = `assets/${type}_${currentStage}.png`;
+        const CONFIG = {
+            bouquet: {
+                imgSrc: 'assets/bouquet.png',
+                title: 'Distributeur — Bouquets',
+                line: "Parce que je ne t'en ai jamais assez offert alors que tu me le glissais souvent à l'oreille.",
+                sizeMult: 3
+            },
+            tomate: {
+                imgSrc: 'assets/tomate.png',
+                title: 'Distributeur — Tomates',
+                line: "Pour que tu en aies toujours sous la main. Sans discuter.",
+                sizeMult: 3
+            },
+            brownie: {
+                imgSrc: 'assets/brownie.png',
+                title: 'Distributeur — Brownies',
+                line: "Parce que le réconfort, ça se distribue aussi.",
+                sizeMult: 3
+            },
+            barquette: {
+                imgSrc: 'assets/barquette.png',
+                title: 'Distributeur — Barquettes',
+                line: "Une de plus. Et encore une. (On ne juge pas.)",
+                sizeMult: 3.5
+            }
+        };
+
+        const cfg = CONFIG[type] || CONFIG.bouquet;
+
+        document.title = cfg.title;
+
+        const obtenirBtn = document.getElementById('obtenirBtn');
+        const countEl = document.getElementById('count');
+
+        // Counter resets each time you visit this page
+        let count = 0;
+        countEl.textContent = '0';
+
+        function rand(min, max) {
+            return Math.random() * (max - min) + min;
         }
 
-        // Initialize first image
-        updateImage();
+        function spawnBouquetPop() {
+            const img = document.createElement('img');
+            img.src = cfg.imgSrc;
+            img.alt = '';
+            img.className = 'bouquet-pop is-pop';
 
-        // 3. Mouse Movement Logic
-        document.addEventListener('mousemove', (e) => {
-            imgElement.style.left = e.clientX + 'px';
-            imgElement.style.top = e.clientY + 'px';
-        });
+            // Random position across the viewport, keeping a safe margin.
+            const xVw = rand(8, 92);
+            // Keep away from the bottom control bar
+            const yVh = rand(8, 78);
+            const rDeg = rand(-14, 14);
+            const baseSize = rand(110, 190);
+            const sizeMult = Number.isFinite(cfg.sizeMult) ? cfg.sizeMult : 1;
+            const size = Math.round(baseSize * sizeMult);
 
-        // 4. Click Logic
-        document.addEventListener('click', (e) => {
-            // Ignore clicks on the back button
-            if(e.target.classList.contains('back-btn')) return;
+            img.style.left = `${xVw}vw`;
+            img.style.top = `${yVh}vh`;
+            img.style.width = `${size}px`;
+            img.style.setProperty('--r', `${rDeg}deg`);
 
-            if (currentStage < maxStages) {
-                currentStage++;
-                updateImage();
-            } else {
-                // Reset on final click
-                currentStage = 1;
-                updateImage();
+            // Keep the DOM light: after a while, remove oldest bouquets.
+            const existing = document.querySelectorAll('img.bouquet-pop');
+            if (existing.length > 100) {
+                existing[0].remove();
             }
+
+            document.body.appendChild(img);
+        }
+
+        obtenirBtn.addEventListener('click', () => {
+            count += 1;
+            countEl.textContent = String(count);
+            spawnBouquetPop();
         });
     </script>
 </body>
